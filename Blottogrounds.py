@@ -4,8 +4,8 @@
 # player's name as a string, and the remaining 10 entries are integers
 # - a list of size 10 that encodes the distribution of points among the towers
 # - a 'battle' function that determines the victory condition at the towers
-# OUTPUT: a .csv(?) file with a ranking of the players based on the number of
-# games they've won. OPTIONAL - a matrix that shows who beat who.
+# OUTPUT: a .csv file with a ranking of the players based on the number of
+# games they've won, disqualifications, and a matrix that shows who beat who.
 
 import csv
 import importlib
