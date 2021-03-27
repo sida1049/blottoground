@@ -17,8 +17,8 @@ r = importlib.import_module('Rules.' + r_name)
 subs_name = input("Name of submission file: ")
 subs = []
 
+# Input routine:
 with open('Submissions/' + subs_name + '.csv') as csvfile:
-#with open(subs_name + '.csv') as csvfile:
     raw = csv.reader(csvfile, delimiter = ',')
     for row in raw:
         if not row[2].isnumeric():
@@ -74,8 +74,11 @@ ranks = []
 for i in range(len(subs)):
     ranks.append([i+1,subs[i][0],subs[i][11]])
 
-with open('results.csv', 'w', newline = '') as newcsv:
+# Output routine:
+with open('Results/results.csv', 'w', newline = '') as newcsv:
     mywriter = csv.writer(newcsv)
+    mywriter.writerow(["Rules file:",r_name,"Submissions file:",subs_name])
+    mywriter.writerow([])
     mywriter.writerow(["Ranking","Name","Wins"])
     for rank in ranks:
         mywriter.writerow(rank)
@@ -94,6 +97,7 @@ with open('results.csv', 'w', newline = '') as newcsv:
     for i in range(len(names)):
         mywriter.writerow([names[i]] + win_matrix[i])
 
+# Additional graph rendering:
 render = input("Done! Would you like a graph? (YES?) ")
 render = render.lower()
 render = render.strip()
