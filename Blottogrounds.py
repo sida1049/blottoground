@@ -12,15 +12,21 @@ import importlib
 
 # Importing a .py file that contains the point distribution and battle:
 r_name = input("Name of rules file: ")
-r = importlib.import_module(r_name)
+r = importlib.import_module('Rules.' + r_name)
 
 subs_name = input("Name of submission file: ")
 subs = []
 
-# TO-DO: read .csv file and make subs into a list where each entry is a list of
-# length 11, where the first entry is name and the rest are allocations.
-# IMPORTANT: pass all allocations through the int() function so the numbers in
-# subs are integers only.
+with open('Submissions/' + subs_name + '.csv') as csvfile:
+#with open(subs_name + '.csv') as csvfile:
+    raw = csv.reader(csvfile, delimiter = ',')
+    for row in raw:
+        if not row[2].isnumeric():
+            continue
+        newsub = [row[1]]
+        for i in range(2,12):
+            newsub.append(int(row[i]))
+        subs.append(newsub)
 
 # Checking for infeasible submissions:
 disquals = []
@@ -58,7 +64,6 @@ for i in range(len(subs)):
             win_matrix[j][i] = 1
 
 # Counting wins:
-
 for i in range(len(subs)):
     subs[i].append(sum(win_matrix[i]))
 
@@ -66,7 +71,44 @@ for i in range(len(subs)):
 subs.sort(key = lambda sub : sub[11], reverse = True)
 
 ranks = []
-for i in len(subs):
-    ranks.append([subs[i][0],subs[i][11]])
+for i in range(len(subs)):
+    ranks.append([i+1,subs[i][0],subs[i][11]])
 
-#TO-DO: output ranks, disquals and win_matrix a .csv file that is human-readable
+with open('results.csv', 'w', newline = '') as newcsv:
+    mywriter = csv.writer(newcsv)
+    mywriter.writerow(["Ranking","Name","Wins"])
+    for rank in ranks:
+        mywriter.writerow(rank)
+    if len(disquals) > 0:
+        mywriter.writerow([])
+        mywriter.writerow(["Disqualifications:"])
+        for disqual in disquals:
+            mywriter.writerow(disqual)
+    mywriter.writerow([])
+    mywriter.writerow(["Win matrix:"])
+    names = []
+    for rank in ranks:
+        names.append(rank[1])
+    names.sort()
+    mywriter.writerow([""] + names)
+    for i in range(len(names)):
+        mywriter.writerow([names[i]] + win_matrix[i])
+
+render = input("Done! Would you like a graph? (YES?) ")
+render = render.lower()
+render = render.strip()
+if render != 'yes':
+    print("No graph produced.")
+if render == 'yes':
+    import networkx as nx
+    import matplotlib.pyplot as plt
+    G = DiGraph()
+    G.add_nodes_from(names)
+    for i in range(len(subs)):
+        for j in range(i+1,len(subs)):
+            if win_matrix[i][j] == 1:
+                G.add_edge(names[i],names[j])
+    plt.figure(figsize=(8,8))
+    nx.draw(G, connectionstyle='arc3, rad = 0.1',)
+    plt.savefig('results_graph.pdf')
+    print("Graph produced and saved.")
