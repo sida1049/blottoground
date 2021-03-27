@@ -30,22 +30,22 @@ with open('Submissions/' + subs_name + '.csv') as csvfile:
 
 # Checking for infeasible submissions:
 disquals = []
-disquals_ind = []
+newsubs = []
 for i in range(len(subs)):
-    invalid = False
+    valid = True
     if sum(subs[i][1:]) != 100:
-        invalid = True
+        valid = False
     else:
         for n in subs[i][1:]:
             if n < 0 or n > 100:
-                invalid = True
+                valid = False
                 break
-    if invalid:
-        disquals_ind.append(i)
+    if valid:
+        newsubs.append(subs[i])
+    else valid:
+        disquals.append(subs[i])
 
-for i in range(len(disquals_ind)):
-    disquals.append(subs.pop(disquals_ind[i]))
-
+subs = newsubs
 subs.sort() # lexicographical sorting
 
 # In the following win matrix, encode 0 for loss OR tie and 1 for win.
