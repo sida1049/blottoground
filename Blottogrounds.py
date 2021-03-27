@@ -42,7 +42,7 @@ for i in range(len(subs)):
                 break
     if valid:
         newsubs.append(subs[i])
-    else valid:
+    else:
         disquals.append(subs[i])
 
 subs = newsubs
