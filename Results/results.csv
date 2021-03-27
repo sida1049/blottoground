@@ -1,0 +1,19 @@
+Rules file:,rules_classic,Submissions file:,test2
+
+Ranking,Name,Wins
+1,player3,4
+2,player2,3
+3,badman,2
+4,player1,1
+5,player6,0
+
+Disqualifications:
+player4,1,1,1,17,17,17,20,20,3,0
+
+Win matrix:
+,badman,player1,player2,player3,player6
+badman,0,1,0,0,1
+player1,0,0,0,0,1
+player2,1,1,0,0,1
+player3,1,1,1,0,1
+player6,0,0,0,0,0

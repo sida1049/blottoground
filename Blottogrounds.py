@@ -30,6 +30,7 @@ with open('Submissions/' + subs_name + '.csv') as csvfile:
 
 # Checking for infeasible submissions:
 disquals = []
+disquals_ind = []
 for i in range(len(subs)):
     invalid = False
     if sum(subs[i][1:]) != 100:
@@ -40,7 +41,10 @@ for i in range(len(subs)):
                 invalid = True
                 break
     if invalid:
-        disquals.append(subs.pop(i))
+        disquals_ind.append(i)
+
+for i in range(len(disquals_ind)):
+    disquals.append(subs.pop(disquals_ind[i]))
 
 subs.sort() # lexicographical sorting
 
