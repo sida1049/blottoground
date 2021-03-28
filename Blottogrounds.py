@@ -8,6 +8,7 @@
 # games they've won, disqualifications, and a matrix that shows who beat who.
 
 import csv
+import copy
 import importlib
 
 # Importing a .py file that contains the point distribution and battle:
@@ -72,6 +73,7 @@ for i in range(len(subs)):
     subs[i].append(sum(win_matrix[i]))
 
 # Sort subs according to descending win count (12th entry):
+subs_unsorted = copy.deepcopy(subs)
 subs.sort(key = lambda sub : sub[11], reverse = True)
 
 ranks = []
@@ -108,7 +110,7 @@ with open('Results/results.csv', 'w', newline = '') as newcsv:
     for i in range(len(names)):
         mywriter.writerow([names[i]] + win_matrix[i])
 
-# Additional graph rendering:
+# Optional graph rendering:
 render = input("Done! Would you like a graph? (YES?) ")
 render = render.lower()
 render = render.strip()
@@ -124,6 +126,9 @@ if render == 'yes':
             if win_matrix[i][j] > 0:
                 G.add_edge(names[i],names[j])
     plt.figure(figsize=(8,8))
-    nx.draw(G, with_labels=True, connectionstyle='arc3, rad = 0.1', node_color='#73E4E8')
-    plt.savefig('results_graph.pdf')
+    nodesizes = [sub[11]*100 for sub in subs_unsorted]
+    nx.draw(G, with_labels=True, connectionstyle='arc3, rad = 0.1',
+            node_color='#73E4E8',
+            node_size=nodesizes)
+    plt.savefig('Results/results_graph.pdf')
     print("Graph produced and saved.")
