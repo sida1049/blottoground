@@ -117,13 +117,13 @@ if render != 'yes':
 if render == 'yes':
     import networkx as nx
     import matplotlib.pyplot as plt
-    G = DiGraph()
+    G = nx.DiGraph()
     G.add_nodes_from(names)
     for i in range(len(subs)):
-        for j in range(i+1,len(subs)):
-            if win_matrix[i][j] == 1:
+        for j in range(len(subs)):
+            if win_matrix[i][j] > 0:
                 G.add_edge(names[i],names[j])
     plt.figure(figsize=(8,8))
-    nx.draw(G, connectionstyle='arc3, rad = 0.1',)
+    nx.draw(G, with_labels=True, connectionstyle='arc3, rad = 0.1', node_color='#73E4E8')
     plt.savefig('results_graph.pdf')
     print("Graph produced and saved.")
