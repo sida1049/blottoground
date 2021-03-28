@@ -76,7 +76,14 @@ subs.sort(key = lambda sub : sub[11], reverse = True)
 
 ranks = []
 for i in range(len(subs)):
-    ranks.append([i+1,subs[i][0],subs[i][11]])
+    rank_count = 1
+    if i == 0:
+        ranks.append([rank_count,subs[i][0],subs[i][11]])
+    elif subs[i][11] != subs[i-1][11]:
+        rank_count = i+1
+        ranks.append([rank_count,subs[i][0],subs[i][11]])
+    elif subs[i][11] == subs[i-1][11]:
+        ranks.append([rank_count,subs[i][0],subs[i][11]])
 
 # Output routine:
 with open('Results/results.csv', 'w', newline = '') as newcsv:
