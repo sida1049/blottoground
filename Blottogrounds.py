@@ -77,8 +77,8 @@ subs_unsorted = copy.deepcopy(subs)
 subs.sort(key = lambda sub : sub[11], reverse = True)
 
 ranks = []
+rank_count = 1
 for i in range(len(subs)):
-    rank_count = 1
     if i == 0:
         ranks.append([rank_count,subs[i][0],subs[i][11]])
     elif subs[i][11] != subs[i-1][11]:
@@ -124,9 +124,9 @@ if render == 'yes':
     for i in range(len(subs)):
         for j in range(len(subs)):
             if win_matrix[i][j] > 0:
-                G.add_edge(names[i],names[j])
+                G.add_edge(names[j],names[i])
     plt.figure(figsize=(8,8))
-    nodesizes = [sub[11]*100 for sub in subs_unsorted]
+    nodesizes = [sub[11]*200 for sub in subs_unsorted]
     nx.draw(G, with_labels=True, connectionstyle='arc3, rad = 0.1',
             node_color='#73E4E8',
             node_size=nodesizes)
