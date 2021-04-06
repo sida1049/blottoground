@@ -57,12 +57,12 @@ for i in range(len(subs)):
     for j in range(i+1,len(subs)):
         i_score = 0
         j_score = 0
-        for k in range(10):
+        for k in range(1,11):
             outcome = r.battle(subs[i][k],subs[j][k])
             if outcome == 1: # i wins
-                i_score = i_score + r.points[k]
+                i_score = i_score + r.points[k-1]
             elif outcome == 2: # j wins
-                j_score = j_score + r.points[k]
+                j_score = j_score + r.points[k-1]
         if i_score > j_score:
             win_matrix[i][j] = 1
         elif i_score < j_score:
