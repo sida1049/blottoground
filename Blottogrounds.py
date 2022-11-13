@@ -11,11 +11,6 @@ import csv
 import copy
 import importlib
 
-# Points for winning, tying and losing:
-win_pts = 1
-tie_pts = 0.5
-loss_pts = 0
-
 # Importing a .py file that contains the point distribution and battle:
 r_name = input("Name of rules file: ")
 r = importlib.import_module('Rules.' + r_name)
@@ -56,50 +51,34 @@ subs.sort() # lexicographical sorting
 
 # In the following win matrix, encode 0 for loss OR tie and 1 for win.
 # E.g. win_matrix[i][j] == 1 means "i beats j"
-win_matrix = [[None for i in subs] for j in subs]
+win_matrix = [[0 for i in subs] for j in subs]
 
 for i in range(len(subs)):
     for j in range(i+1,len(subs)):
         i_score = 0
         j_score = 0
-        for k in range(1,11):
+        for k in range(10):
             outcome = r.battle(subs[i][k],subs[j][k])
             if outcome == 1: # i wins
-                i_score = i_score + r.points[k-1]
+                i_score = i_score + r.points[k]
             elif outcome == 2: # j wins
-                j_score = j_score + r.points[k-1]
+                j_score = j_score + r.points[k]
         if i_score > j_score:
-            win_matrix[i][j] = 'W'
-            win_matrix[j][i] = 'L'
+            win_matrix[i][j] = 1
         elif i_score < j_score:
-            win_matrix[i][j] = 'L'
-            win_matrix[j][i] = 'W'
-        elif i_score == j_score:
-            win_matrix[i][j] = 'T'
-            win_matrix[j][i] = 'T'
+            win_matrix[j][i] = 1
 
-# Counting points:
-def results_to_points(R):
-    points = 0
-    for r in R:
-        if r == 'W':
-            points += win_pts
-        elif r == 'T':
-            points += tie_pts
-        elif r == 'L':
-            points += loss_pts
-    return points
-
+# Counting wins:
 for i in range(len(subs)):
-    subs[i].append(results_to_points(win_matrix[i]))
+    subs[i].append(sum(win_matrix[i]))
 
 # Sort subs according to descending win count (12th entry):
 subs_unsorted = copy.deepcopy(subs)
 subs.sort(key = lambda sub : sub[11], reverse = True)
 
 ranks = []
-rank_count = 1
 for i in range(len(subs)):
+    rank_count = 1
     if i == 0:
         ranks.append([rank_count,subs[i][0],subs[i][11]])
     elif subs[i][11] != subs[i-1][11]:
@@ -113,9 +92,7 @@ with open('Results/results.csv', 'w', newline = '') as newcsv:
     mywriter = csv.writer(newcsv)
     mywriter.writerow(["Rules file:",r_name,"Submissions file:",subs_name])
     mywriter.writerow([])
-    mywriter.writerow(["Win: "+str(win_pts),"Tie: "+str(tie_pts),"Loss: "+str(loss_pts)])
-    mywriter.writerow([])
-    mywriter.writerow(["Ranking","Name","Points"])
+    mywriter.writerow(["Ranking","Name","Wins"])
     for rank in ranks:
         mywriter.writerow(rank)
     if len(disquals) > 0:
@@ -146,10 +123,10 @@ if render == 'yes':
     G.add_nodes_from(names)
     for i in range(len(subs)):
         for j in range(len(subs)):
-            if win_matrix[i][j] == 'W':
-                G.add_edge(names[j],names[i])
+            if win_matrix[i][j] > 0:
+                G.add_edge(names[i],names[j])
     plt.figure(figsize=(8,8))
-    nodesizes = [sub[11]*200 for sub in subs_unsorted]
+    nodesizes = [sub[11]*100 for sub in subs_unsorted]
     nx.draw(G, with_labels=True, connectionstyle='arc3, rad = 0.1',
             node_color='#73E4E8',
             node_size=nodesizes)
